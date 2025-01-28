@@ -22,7 +22,7 @@ export async function PUT(request) {
   const body = await request.json();
   const id = body.id;
 
-  if (id.titulo !== "" && id.platafomrma !== "" && id.genero !== "") {
+  if (id.titulo !== "" && id.plataforma !== "" && id.genero !== "") {
     const { data: updateData, error } = await supabase
       .from("videojuego")
       .update(body.update)
