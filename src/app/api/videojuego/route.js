@@ -11,6 +11,10 @@ export async function GET() {
     .select("id,titulo,plataforma")
     .order("titulo", { ascending: true });
 
+  if (error) {
+    return new Response(JSON.stringify(error), { status: 404 });
+  }
+
   return new Response(JSON.stringify(videojuegos), { status: 200 });
 }
 
