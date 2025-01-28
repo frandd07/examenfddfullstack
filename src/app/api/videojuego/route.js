@@ -18,6 +18,18 @@ export async function GET() {
   return new Response(JSON.stringify(videojuegos), { status: 200 });
 }
 
+export async function PUT(request) {
+  const body = await request.json();
+  const id = body.id;
+  const { data: updateData, error } = await supabase
+    .from("videojuego")
+    .update(body.update)
+    .eq("id", id);
+  return new Response(
+    JSON.stringify({ success: "actualizado" }, { status: 200 })
+  );
+}
+
 export async function DELETE(request) {
   const body = await request.json();
   const id = body.id;

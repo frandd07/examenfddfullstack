@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
 export default function ListVideojuego() {
@@ -32,7 +33,11 @@ export default function ListVideojuego() {
       <h1>Lista de videojuegos</h1>
       {videojuegos.map((videojuego) => (
         <p key={videojuego.id}>
-          Titulo: {videojuego.titulo} || Plataforma: {videojuego.plataforma}{" "}
+          <Link href={"/videojuego/" + videojuego.id}>
+            {" "}
+            Titulo: {videojuego.titulo} || Plataforma: {videojuego.plataforma}{" "}
+          </Link>
+
           <button onClick={() => deleteVideojuego(videojuego.id)}>
             Eliminar
           </button>
