@@ -8,7 +8,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export async function GET() {
   const { data: videojuego, error } = await supabase
     .from("videojuego")
-    .select("id,titulo,plataforma")
+    .select("id,titulo,plataforma,completado")
     .order("titulo", { ascending: true });
 
   if (error) {
@@ -22,17 +22,24 @@ export async function PUT(request) {
   const body = await request.json();
   const id = body.id;
 
-  if (id.titulo !== "" && id.plataforma !== "" && id.genero !== "") {
+  if (id && typeof body.completado !== "undefined") {
     const { data: updateData, error } = await supabase
       .from("videojuego")
-      .update(body.update)
+      .update({ completado: body.completado })
       .eq("id", id);
-    return new Response(
-      JSON.stringify({ success: "actualizado" }, { status: 200 })
-    );
-  } else {
-    return new Response(JSON.stringify(error), { status: 400 });
+
+    if (error) {
+      return new Response(JSON.stringify(error), { status: 400 });
+    }
+
+    return new Response(JSON.stringify({ success: "actualizado" }), {
+      status: 200,
+    });
   }
+
+  return new Response(JSON.stringify({ error: "Faltan datos" }), {
+    status: 400,
+  });
 }
 
 export async function DELETE(request) {

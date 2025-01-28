@@ -50,10 +50,6 @@ export default function CreateVideojuego() {
 
   return (
     <div className="container">
-      <Link href="/videojuego">Ir a la lista de videojuegos</Link>
-      <br />
-      <br />
-      <br />
       <h1>Añadir Videojuego</h1>
       <form onSubmit={crearVideojuego}>
         <label>

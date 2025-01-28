@@ -5,7 +5,6 @@ import React, { useState, useEffect } from "react";
 
 export default function ListVideojuego() {
   const [videojuegos, setVideojuegos] = useState([]);
-  const [filtro, setFiltro] = useState("");
 
   async function fetchVideojuegos() {
     const response = await fetch("/api/videojuego");
@@ -21,7 +20,7 @@ export default function ListVideojuego() {
     if (window.confirm("¿Seguro que quieres eliminarlo permanentemente?")) {
       const response = await fetch("/api/videojuego", {
         method: "DELETE",
-        headers: { "Content-Type": "application-json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: deleteID }),
       });
       alert("Eliminado correctamente");
@@ -29,26 +28,41 @@ export default function ListVideojuego() {
     }
   }
 
-  const videojuegosFiltrados = videojuegos.filter((videojuego) =>
-    videojuego.titulo.toLowerCase().includes(filtro.toLowerCase())
-  );
+  async function completado(id, completado) {
+    const response = await fetch("/api/videojuego", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id,
+        completado: !completado,
+      }),
+    });
+
+    if (response.ok) {
+      fetchVideojuegos();
+    } else {
+      alert("Hubo un error al actualizar el estado.");
+    }
+  }
 
   return (
     <div>
       <h1>Lista de videojuegos</h1>
-      <input
-        type="text"
-        placeholder="Filtrar por título"
-        value={filtro}
-        onChange={(e) => setFiltro(e.target.value)}
-      />
-      <br />
-      {videojuegosFiltrados.map((videojuego) => (
+      {videojuegos.map((videojuego) => (
         <p key={videojuego.id}>
           <Link href={"/videojuego/" + videojuego.id}>
-            {" "}
-            Titulo: {videojuego.titulo} || Plataforma: {videojuego.plataforma}{" "}
+            Titulo: {videojuego.titulo} || Plataforma: {videojuego.plataforma}
           </Link>
+
+          <label>
+            Completado
+            <input
+              type="checkbox"
+              checked={videojuego.completado}
+              onChange={() => completado(videojuego.id, videojuego.completado)}
+            />
+          </label>
+
           <button onClick={() => deleteVideojuego(videojuego.id)}>
             Eliminar
           </button>
