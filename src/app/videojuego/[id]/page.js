@@ -1,6 +1,7 @@
 "use client";
 
 import React, { use, useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function Videojuego({ params }) {
   const { id } = use(params);
@@ -14,25 +15,30 @@ export default function Videojuego({ params }) {
 
   async function actualizarVideojuego(e) {
     e.preventDefault();
-    const response = await fetch("/api/videojuego", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: id,
-        update: {
-          titulo: titulo,
-          plataforma: plataforma,
-          genero: genero,
-          fecha_lanzamiento: fecha_lanzamiento,
-          completado: completado,
-        },
-      }),
-    });
-    if (response.ok) {
-      setIsEditing(false);
-      fetchVideojuego();
+
+    if (titulo !== "" && plataforma !== "" && genero !== "") {
+      const response = await fetch("/api/videojuego", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: id,
+          update: {
+            titulo: titulo,
+            plataforma: plataforma,
+            genero: genero,
+            fecha_lanzamiento: fecha_lanzamiento,
+            completado: completado,
+          },
+        }),
+      });
+      if (response.ok) {
+        setIsEditing(false);
+        fetchVideojuego();
+      } else {
+        alert("Error al actualizar el videojuego");
+      }
     } else {
-      console.error("Error al actualizar el videojuego");
+      alert("Algún campo vacío");
     }
   }
 
@@ -55,6 +61,9 @@ export default function Videojuego({ params }) {
   if (videojuego && !isEditing) {
     return (
       <div className="container">
+        <Link href="/videojuego">Ir a la lista</Link>
+        <br />
+        <br />
         <h1>{videojuego.titulo}</h1>
         {console.log(videojuego)}
         <h2>{videojuego.plataforma}</h2>

@@ -43,6 +43,8 @@ export default function ListVideojuego() {
           </button>
         </p>
       ))}
+      <br />
+      <Link href={"/videojuego/create"}>Agregar videojuego</Link>
     </div>
   );
 }

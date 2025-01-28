@@ -6,7 +6,7 @@ const supabaseKey =
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function GET() {
-  const { data: videojuegos, error } = await supabase
+  const { data: videojuego, error } = await supabase
     .from("videojuego")
     .select("id,titulo,plataforma")
     .order("titulo", { ascending: true });
@@ -15,19 +15,24 @@ export async function GET() {
     return new Response(JSON.stringify(error), { status: 404 });
   }
 
-  return new Response(JSON.stringify(videojuegos), { status: 200 });
+  return new Response(JSON.stringify(videojuego), { status: 200 });
 }
 
 export async function PUT(request) {
   const body = await request.json();
   const id = body.id;
-  const { data: updateData, error } = await supabase
-    .from("videojuego")
-    .update(body.update)
-    .eq("id", id);
-  return new Response(
-    JSON.stringify({ success: "actualizado" }, { status: 200 })
-  );
+
+  if (id.titulo !== "" && id.platafomrma !== "" && id.genero !== "") {
+    const { data: updateData, error } = await supabase
+      .from("videojuego")
+      .update(body.update)
+      .eq("id", id);
+    return new Response(
+      JSON.stringify({ success: "actualizado" }, { status: 200 })
+    );
+  } else {
+    return new Response(JSON.stringify(error), { status: 400 });
+  }
 }
 
 export async function DELETE(request) {
@@ -46,4 +51,26 @@ export async function DELETE(request) {
   return new Response(JSON.stringify({ success: "eliminado con éxito" }), {
     status: 200,
   });
+}
+
+export async function POST(request) {
+  const body = await request.json();
+  const videojuego = body.videojuego;
+
+  if (
+    videojuego.titulo !== "" &&
+    videojuego.plataforma !== "" &&
+    videojuego.genero !== ""
+  ) {
+    const { data: postData, error } = await supabase
+      .from("videojuego")
+      .insert(videojuego);
+    if (!error) {
+      return new Response(JSON.stringify({ success: "Creado con éxito" }), {
+        status: 201,
+      });
+    }
+  } else {
+    return new Response(JSON.stringify(error), { status: 400 });
+  }
 }
