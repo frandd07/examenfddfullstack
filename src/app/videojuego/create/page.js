@@ -30,6 +30,7 @@ export default function CreateVideojuego() {
         });
         if (response.ok) {
           alert("Videojuego creado exitosamente.");
+          window.location.href = "/videojuego";
           setTitulo("");
           setPlataforma("");
           setGenero("");
